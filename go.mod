@@ -1,3 +1,3 @@
-module github.com/FranklinThree/MyWeb
+module main
 
 go 1.17
