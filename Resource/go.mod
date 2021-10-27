@@ -1,4 +1,4 @@
-module Resource
+module github.com/FranklinThree/MyWeb/Resource
 
 go 1.17
 
