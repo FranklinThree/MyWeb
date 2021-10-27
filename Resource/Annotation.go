@@ -1,10 +1,10 @@
 package Resource
 
 type Annotation struct {
-	id int
+	id       uint
 	sentence string
 }
 
-func(ann *Annotation)ToStructure(){
+func (ann *Annotation) ToStructure() {
 
 }

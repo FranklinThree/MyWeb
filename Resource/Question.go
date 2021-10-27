@@ -1,10 +1,11 @@
 package Resource
 
 type Question struct {
-	id int
+	id      uint
+	ask     string
 	choices []Choice
 }
 
-func (q *Question)ToStructure(){
+func (q *Question) ToStructure() {
 
 }

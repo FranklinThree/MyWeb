@@ -1,10 +1,10 @@
 package Resource
 
 type Questionnaire struct {
-	id int
+	id      uint
 	objects []QuestionnaireObject
 }
 
-func (qn *Questionnaire)ToStructure(){
+func (qn *Questionnaire) ToStructure() {
 
 }

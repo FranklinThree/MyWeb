@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/FranklinThree/MyWeb/Resource"
+)
 
-func main(){
+func main() {
 	fmt.Println("Good afternoon!")
+
 }

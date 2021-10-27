@@ -12,9 +12,16 @@ import (
 )
 
 type AwesomeServer struct {
+	SqlConfig Config
+	NetConfig Config
 }
 
-func (as *AwesomeServer) Start() (e error) {
-	return e
+func (as *AwesomeServer) Start() (err error) {
+	db, err := getMysqlDB_New(as.SqlConfig)
+	objs := make([]QuestionnaireObject, 16)
+	objs[1] = &Question{100, "您谈过恋爱嘛?", []Choice{{1, "是"}, {2, "否"}}}
+	qnn := Questionnaire{1, objs}
+	db.Create(&qnn)
+	return
 
 }

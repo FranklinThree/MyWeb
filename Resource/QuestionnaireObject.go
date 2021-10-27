@@ -1,8 +1,5 @@
 package Resource
 
-type QuestionnaireObject struct {
-
-}
-func (qo *QuestionnaireObject) ToStructure(){
-
+type QuestionnaireObject interface {
+	ToStructure()
 }
