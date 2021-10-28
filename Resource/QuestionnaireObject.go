@@ -1,5 +1,5 @@
-package Resource
+package resource
 
 type QuestionnaireObject interface {
-	ToStructure()
+	ToStructure() (string, error)
 }

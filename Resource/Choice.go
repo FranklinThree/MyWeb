@@ -1,6 +1,10 @@
-package Resource
+package resource
 
 type Choice struct {
 	id       uint
 	sentence string
+}
+
+func (c *Choice) toString() string {
+
 }

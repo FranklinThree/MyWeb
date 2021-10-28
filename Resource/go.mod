@@ -1,4 +1,4 @@
-module Resource
+module resource
 
 go 1.17
 
