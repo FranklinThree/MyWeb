@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/FranklinThree/MyWeb/Resource"
+	"github.com/FranklinThree/MyWeb/resource"
 )
 
 func main() {
