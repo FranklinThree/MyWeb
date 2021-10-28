@@ -1,4 +1,4 @@
-package MyWeb
+package main
 
 import (
 	"bufio"

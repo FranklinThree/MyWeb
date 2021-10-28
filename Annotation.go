@@ -1,8 +1,8 @@
-package MyWeb
+package main
 
 type Annotation struct {
-	id       uint
-	sentence string
+	Id       uint
+	Sentence string
 }
 
 func (ann *Annotation) ToStructure() (res string, err error) {

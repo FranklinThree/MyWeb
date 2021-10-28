@@ -1,6 +1,6 @@
-package MyWeb
+package main
 
 type Tag struct {
-	id       uint
-	sentence string
+	Id       uint
+	Sentence string
 }

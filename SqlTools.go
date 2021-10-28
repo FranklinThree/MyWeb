@@ -1,12 +1,35 @@
-package MyWeb
+package main
 
 import (
 	"errors"
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func getMysqlDB_New(config Config) (db *gorm.DB, err error) {
+	fmt.Println(config.Map["userName"] + ":" + config.Map["userKey"] +
+		"@(" + config.Map["ip"] + ":" + config.Map["port"] + ")/" +
+		config.Map["databaseName"] +
+		"?charset=" + config.Map["charset"])
+	db, err = gorm.Open(mysql.New(mysql.Config{
+		DSN: config.Map["userName"] + ":" + config.Map["userKey"] +
+			"@(" + config.Map["ip"] + ":" + config.Map["port"] + ")/" +
+			config.Map["databaseName"] +
+			"?charset=" + config.Map["charset"],
+	}),
+		&gorm.Config{},
+	)
+	if !CheckErr(err) {
+		return nil, errors.New("sql数据库初始化失败！请检查" + config.Path + "文件是否正确！")
+	}
+	return
+}
+func getMysqlDB_Old(config Config) (db *gorm.DB, err error) {
+	fmt.Println(config.Map["userName"] + ":" + config.Map["userKey"] +
+		"@(" + config.Map["ip"] + ":" + config.Map["port"] + ")/" +
+		config.Map["databaseName"] +
+		"?charset=" + config.Map["charset"])
 	db, err = gorm.Open(mysql.New(mysql.Config{
 		DSN: config.Map["userName"] + ":" + config.Map["userKey"] +
 			"@(" + config.Map["ip"] + ":" + config.Map["port"] + ")/" +

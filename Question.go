@@ -1,10 +1,10 @@
-package MyWeb
+package main
 
 type Question struct {
-	id          uint
-	name        string
-	description string
-	choices     []Choice
+	Id          uint
+	Name        string
+	Description string
+	Choices     []Choice
 }
 
 func (q *Question) ToStructure() (res string, err error) {

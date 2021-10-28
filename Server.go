@@ -1,26 +1,19 @@
-package MyWeb
+package main
 
 import (
-	_ "database/sql"
 	"errors"
 	"fmt"
-	_ "fmt"
-	_ "github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
-	_ "gorm.io/driver/sqlite"
-	_ "gorm.io/gorm"
+	"github.com/gin-gonic/gin"
 	"net/http"
-	_ "net/http"
-	_ "strconv"
 )
 
 type AwesomeServer struct {
-	SqlConfig Config
-	NetConfig Config
+	sqlConfig Config
+	netConfig Config
 }
 
 func (as *AwesomeServer) Start() (err error) {
-	db, err := getMysqlDB_New(as.SqlConfig)
+	db, err := getMysqlDB_New(as.sqlConfig)
 	if !CheckErr(err) {
 		return err
 	}
@@ -29,6 +22,13 @@ func (as *AwesomeServer) Start() (err error) {
 	qnn := Questionnaire{1, "测试问卷1", "", objs}
 
 	//测试模块
+	//db.Exec("create table text(id int not null)")
+
+	fmt.Println("this is", qnn)
+	fmt.Println(db.Migrator().HasTable(&Questionnaire{}))
+	db.Set("gorm:table_options", "AUTO_INCREMENT = 1 ENGINE=InnoDB DEFAULT CHARSET=utf8")
+	err = db.Migrator().CreateTable(&Questionnaire{})
+	CheckErr(err)
 	fmt.Println(&qnn)
 	db.Create(&qnn)
 	var got = new(Questionnaire)
@@ -37,9 +37,14 @@ func (as *AwesomeServer) Start() (err error) {
 	//
 	router := gin.New()
 
-	router.LoadHTMLGlob("./static/html/*")
+	router.LoadHTMLGlob("static/html/*")
 	router.StaticFS("/static", http.Dir("./static"))
 
+	router.GET("/index.html", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"Title": "666",
+		})
+	})
 	//网页返回数据到服务器
 	router.POST("/questionnaire/input", func(c *gin.Context) {
 
@@ -51,7 +56,7 @@ func (as *AwesomeServer) Start() (err error) {
 		//db.
 	})
 
-	err = router.Run(as.NetConfig.Map["ip"] + ":" + as.NetConfig.Map["port"])
+	err = router.Run(as.netConfig.Map["ip"] + ":" + as.netConfig.Map["port"])
 	if !CheckErr(err) {
 		return errors.New("服务器初始化失败")
 	}

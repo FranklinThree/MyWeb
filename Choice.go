@@ -1,8 +1,8 @@
-package MyWeb
+package main
 
 type Choice struct {
-	id       uint
-	sentence string
+	Id       uint
+	Sentence string
 }
 
 func (c *Choice) toString() string {
