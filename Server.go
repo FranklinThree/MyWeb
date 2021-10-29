@@ -17,8 +17,13 @@ func (as *AwesomeServer) Start() (err error) {
 	if !CheckErr(err) {
 		return err
 	}
-	objs := make([]QuestionnaireObject, 16)
-	objs[1] = &Question{100, "您谈过恋爱嘛?", "", []Choice{{1, "是"}, {2, "否"}}}
+	objs := make([]Question, 16)
+	objs[0] = Question{100, "您谈过恋爱嘛?", "", Choices{
+		[]Choice{
+			{1, "是"},
+			{2, "否"},
+		},
+	}}
 	qnn := Questionnaire{1, "测试问卷1", "", objs}
 
 	//测试模块
