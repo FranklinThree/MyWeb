@@ -1,10 +1,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 )
 
 type AwesomeServer struct {
@@ -13,33 +13,13 @@ type AwesomeServer struct {
 }
 
 func (as *AwesomeServer) Start() (err error) {
-	db, err := getMysqlDB_New(as.sqlConfig)
+
+	db, err := GetMysqlDB_New(as.sqlConfig)
 	if !CheckErr(err) {
 		return err
 	}
-	objs := make([]Question, 16)
-	objs[0] = Question{100, "您谈过恋爱嘛?", "", Choices{
-		[]Choice{
-			{1, "是"},
-			{2, "否"},
-		},
-	}}
-	qnn := Questionnaire{1, "测试问卷1", "", objs}
-
-	//测试模块
-	//db.Exec("create table text(id int not null)")
-
-	fmt.Println("this is", qnn)
-	fmt.Println(db.Migrator().HasTable(&Questionnaire{}))
 	db.Set("gorm:table_options", "AUTO_INCREMENT = 1 ENGINE=InnoDB DEFAULT CHARSET=utf8")
-	err = db.Migrator().CreateTable(&Questionnaire{})
-	CheckErr(err)
-	fmt.Println(&qnn)
-	db.Create(&qnn)
-	var got = new(Questionnaire)
-	db.First(got)
-	fmt.Printf("%#v\n", got)
-	//
+
 	router := gin.New()
 
 	router.LoadHTMLGlob("static/html/*")
@@ -61,10 +41,59 @@ func (as *AwesomeServer) Start() (err error) {
 		//db.
 	})
 
-	err = router.Run(as.netConfig.Map["ip"] + ":" + as.netConfig.Map["port"])
-	if !CheckErr(err) {
-		return errors.New("服务器初始化失败")
+	go func() {
+		err = router.Run(as.netConfig.Map["ip"] + ":" + as.netConfig.Map["port"])
+		if !CheckErr(err) {
+			fmt.Println("Sever stopped with error.")
+			return
+		}
+	}()
+	var massage string
+	var result string
+	for {
+		if _, err := fmt.Scanf("%s", &massage); !CheckErr(err) {
+			result = "Sever stopped."
+			fmt.Println(result)
+			return nil
+		} else {
+			switch strings.ToLower(massage) {
+			case "stop":
+				result = "Sever stopped."
+				fmt.Println(result)
+				return nil
+			case "db.reset":
+				if Confirm("reset database") {
+					fmt.Println("Starting to reset database...")
+					if _, err = SqlDrop(db); !CheckErr(err) {
+						fmt.Println("Failed to reset database:", "step 1:drop")
+						continue
+					}
+
+					if _, err = SqlStart(db); !CheckErr(err) {
+						fmt.Println("Failed to reset database:", "step 2:start")
+						continue
+					}
+					fmt.Println("Reset database successfully.")
+				}
+			case "db.drop":
+				if Confirm("drop all tables") {
+					if _, err = SqlDrop(db); !CheckErr(err) {
+						fmt.Println("Failed to drop tables")
+					}
+				}
+			case "db.start":
+				if Confirm("start all tables") {
+					if _, err = SqlStart(db); !CheckErr(err) {
+
+					}
+
+				}
+			case "db.test-1":
+				err = Test01(db)
+				CheckErr(err)
+			}
+		}
+
 	}
-	return
 
 }
