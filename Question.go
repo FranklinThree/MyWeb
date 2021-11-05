@@ -16,5 +16,4 @@ func (q *Question) ToStructure() (res string, err error) {
 	//
 	//}
 	return "", nil
-
 }

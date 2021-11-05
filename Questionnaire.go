@@ -13,15 +13,12 @@ type Questionnaire struct {
 }
 
 func (qnn *Questionnaire) ToStructure() (res string, err error) {
-	//res = Uint2String(qn.id) + " " + qn.name + "{"
-	//for _, obj := range qn.objects {
-	//	res += "\n"
-	//	temp, err := obj.ToStructure()
-	//	if !CheckErr(err) {
-	//		return "", err
-	//	}
-	//	res += temp
-	//	res += "\n"
-	//}
+	expr := make([]string, 1280)
+
+	expr = append(expr, "}")
 	return res, nil
 }
+
+//func Scan(expr string)(err error){
+//
+//}
