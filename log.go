@@ -8,11 +8,16 @@ const (
 	Error   = 2
 )
 
-func ConsolePrint(Type int, a ...interface{}) {
+func ConsolePrint(Type int, sentence string, a ...interface{}) {
 	var ConsolePrintType = []string{
 		"INFO", "WARNING", "ERROR",
 	}
-	fmt.Println("["+ConsolePrintType[Type]+"]", a)
+	if a != nil {
+		fmt.Println("["+ConsolePrintType[Type]+"]", sentence, a)
+	} else {
+		fmt.Println("["+ConsolePrintType[Type]+"]", sentence)
+	}
+
 }
 
 //func PrintInfo(a ...interface{}){

@@ -22,9 +22,13 @@ type AwesomeServer struct {
 	websocketUpgrader *websocket.Upgrader
 	websocketServer   net.Listener
 	isReady           int
+	maxTryTimes       int
+	retryTime         int64
 }
 
 func (as *AwesomeServer) New() (err error) {
+	as.maxTryTimes = 10
+	as.retryTime = 3
 	as.isReady = 10000
 	go func() {
 		err = as.StartSql()
@@ -33,6 +37,7 @@ func (as *AwesomeServer) New() (err error) {
 			as.isReady -= 100
 			return
 		}
+		ConsolePrint(Info, "数据库初始化成功")
 		as.isReady += 1
 	}()
 	go func() {
@@ -42,10 +47,10 @@ func (as *AwesomeServer) New() (err error) {
 			as.isReady -= 200
 			return
 		}
+		ConsolePrint(Info, "http服务器初始化成功")
 		as.isReady += 2
 	}()
 	go func() {
-
 		err = as.StartWebsocketServer()
 		if !CheckErr(err) {
 			ConsolePrint(Error, "websocket服务器初始化失败:httpserver")
@@ -54,16 +59,17 @@ func (as *AwesomeServer) New() (err error) {
 		}
 		err = as.StartWebsocketUpdater()
 		if !CheckErr(err) {
-			ConsolePrint(Error, "错误:websocket服务器初始化失败:upgrader")
+			ConsolePrint(Error, "websocket服务器初始化失败:upgrader")
 			as.isReady -= 500
 			return
 		}
+		ConsolePrint(Info, "websocket服务器初始化成功")
 		as.isReady += 5
 	}()
 	return err
 }
 func (as *AwesomeServer) Start() (err error) {
-
+	ConsolePrint(Info, "程序初始化中...")
 	if as.isReady != 5233 {
 		if as.isReady == 0 {
 			ConsolePrint(Warning, "总服务器未初始化！")
@@ -71,22 +77,33 @@ func (as *AwesomeServer) Start() (err error) {
 			err = as.New()
 			CheckErr(err)
 		}
+		waitTime := 0
 		for as.isReady != 10008 {
+			time.Sleep(time.Second * time.Duration(as.retryTime))
+			waitTime++
+			if waitTime >= as.maxTryTimes {
+				ConsolePrint(Error, "服务器初始化多次失败，不再重试...", "value", as.isReady, "times", waitTime)
+				break
+			}
 			if as.isReady < 0 {
 				return errors.New("错误:初始化失败")
 			}
+			ConsolePrint(Warning, "服务器初始化失败，正在重试... ", "value", as.isReady, "times", waitTime)
 		}
 		ConsolePrint(Info, "服务器初始化完成")
 		as.isReady = 5233
 	}
+	ConsolePrint(Info, "程序初始化完成")
 
 	//启动http服务器
 	go func() {
+		ConsolePrint(Info, "正在开启服务端口...")
 		err = as.httpServer.Run(as.netConfig.Map["ip"] + ":" + as.netConfig.Map["port"])
 		if !CheckErr(err) {
 			fmt.Println("Sever stopped with error.")
 			return
 		}
+		ConsolePrint(Info, "正在开启服务端口完成")
 	}()
 
 	//tcp/websocket服务器
@@ -161,11 +178,11 @@ func (as *AwesomeServer) StartHttpServer() (err error) {
 	{
 		as.httpServer.LoadHTMLGlob("static/html/*")
 		as.httpServer.StaticFS("/static", http.Dir("./static"))
-
 		as.httpServer.GET("/index.html", func(c *gin.Context) {
 			c.HTML(http.StatusOK, "index.html", gin.H{
 				"Title": "666",
 			})
+
 		})
 		//网页返回数据到服务器
 		as.httpServer.POST("/questionnaire/input", func(c *gin.Context) {
@@ -311,4 +328,8 @@ func (as *AwesomeServer) StartWebsocketUpdater() (err error) {
 		},
 	}
 	return err
+}
+
+func (as *AwesomeServer) HttpWork(relativePath string, a gin.HandlerFunc) {
+
 }

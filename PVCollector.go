@@ -1,7 +1,16 @@
 package main
 
+import "net"
+
+// PageViewCollector
 type PageViewCollector struct {
-	key       string `gorm:"primarykey"`
-	count     uint64
-	PageViews []PageView
+	Key       string `gorm:"primarykey"`
+	Count     uint64
+	PageViews []*PageView
+}
+
+func (pvc *PageViewCollector) AddPageView(ip net.IP) {
+	pvc.PageViews[pvc.Count] = &PageView{}
+	pvc.PageViews[pvc.Count].UserIP = ip
+	pvc.Count++
 }
