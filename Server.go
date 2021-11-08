@@ -17,17 +17,18 @@ type AwesomeServer struct {
 	sqlConfig         Config
 	netConfig         Config
 	wsConfig          Config
+	configs           map[string]Config
 	database          *gorm.DB
 	httpServer        *gin.Engine
 	websocketUpgrader *websocket.Upgrader
 	websocketServer   net.Listener
 	isReady           int
-	maxTryTimes       int
+	maxRetryTimes     int
 	retryTime         int64
 }
 
 func (as *AwesomeServer) New() (err error) {
-	as.maxTryTimes = 10
+	as.maxRetryTimes = 3
 	as.retryTime = 3
 	as.isReady = 10000
 	go func() {
@@ -81,8 +82,8 @@ func (as *AwesomeServer) Start() (err error) {
 		for as.isReady != 10008 {
 			time.Sleep(time.Second * time.Duration(as.retryTime))
 			waitTime++
-			if waitTime >= as.maxTryTimes {
-				ConsolePrint(Error, "服务器初始化多次失败，不再重试...", "value", as.isReady, "times", waitTime)
+			if waitTime >= as.maxRetryTimes {
+				ConsolePrint(Error, "服务器初始化多次失败，不再重试。", "value", as.isReady, "times", waitTime)
 				break
 			}
 			if as.isReady < 0 {
@@ -97,15 +98,13 @@ func (as *AwesomeServer) Start() (err error) {
 
 	//启动http服务器
 	go func() {
-		ConsolePrint(Info, "正在开启服务端口...")
 		err = as.httpServer.Run(as.netConfig.Map["ip"] + ":" + as.netConfig.Map["port"])
 		if !CheckErr(err) {
 			fmt.Println("Sever stopped with error.")
 			return
 		}
-		ConsolePrint(Info, "正在开启服务端口完成")
-	}()
 
+	}()
 	//tcp/websocket服务器
 
 	CheckErr(err)
@@ -182,7 +181,11 @@ func (as *AwesomeServer) StartHttpServer() (err error) {
 			c.HTML(http.StatusOK, "index.html", gin.H{
 				"Title": "666",
 			})
-
+		})
+		as.httpServer.GET("/", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "index.html", gin.H{
+				"Title": "666",
+			})
 		})
 		//网页返回数据到服务器
 		as.httpServer.POST("/questionnaire/input", func(c *gin.Context) {

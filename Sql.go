@@ -130,7 +130,6 @@ func QuestionSqlDrop(db *gorm.DB) (value int, err error) {
 
 //func StatisticSqlStart(db *gorm.DB)(value int,err error){
 //	ConsolePrint(Info,"Starting to start all Statistic tables...")
-//
 //}
 
 func Test01(db *gorm.DB) (err error) {
