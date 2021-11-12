@@ -1,4 +1,4 @@
-package main
+package questionnaire
 
 type Choice struct {
 	ID         uint `gorm:"AUTOINCREMENT"`

@@ -1,6 +1,4 @@
-package main
-
-import ()
+package questionnaire
 
 type AnswerPaper struct {
 	Id      uint `gorm:"AUTOINCREMENT"`
