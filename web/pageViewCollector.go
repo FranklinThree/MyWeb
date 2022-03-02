@@ -2,9 +2,8 @@ package web
 
 import "net"
 
-// PageViewCollector
 type PageViewCollector struct {
-	Key       string `gorm:"primarykey"`
+	Key       string `gorm:"primary"`
 	Count     uint64
 	PageViews []*PageView
 }

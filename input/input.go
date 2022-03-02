@@ -1,7 +1,7 @@
 package input
 
 import (
-	"MyWeb/universal"
+	"com/github/FranklinThree/MyWeb/universal"
 	"fmt"
 )
 

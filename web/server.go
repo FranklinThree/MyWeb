@@ -1,10 +1,10 @@
 package web
 
 import (
-	input2 "MyWeb/input"
-	"MyWeb/sql"
-	"MyWeb/universal"
 	"bufio"
+	input2 "com/github/FranklinThree/MyWeb/input"
+	"com/github/FranklinThree/MyWeb/sql"
+	"com/github/FranklinThree/MyWeb/universal"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"

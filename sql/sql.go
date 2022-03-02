@@ -1,8 +1,8 @@
 package sql
 
 import (
-	"MyWeb/questionnaire"
-	"MyWeb/universal"
+	"com/github/FranklinThree/MyWeb/questionnaire"
+	"com/github/FranklinThree/MyWeb/universal"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

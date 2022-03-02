@@ -1,7 +1,7 @@
 package questionnaire
 
 import (
-	"MyWeb/universal"
+	"com/github/FranklinThree/MyWeb/universal"
 	_ "gorm.io/gorm"
 	"os"
 )
@@ -49,8 +49,6 @@ func Scan(Type int, value string) (qnn *Questionnaire, err error) {
 			value += string(buffer[:readcount])
 		}
 	}
-	for {
 
-	}
-
+	return
 }
